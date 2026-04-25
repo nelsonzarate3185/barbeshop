@@ -1,0 +1,78 @@
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { format } from 'date-fns'
+import api from '../../lib/axios'
+import Spinner from '../../components/ui/Spinner'
+import EmptyState from '../../components/ui/EmptyState'
+
+export default function Facturacion() {
+  const [pagina, setPagina] = useState(1)
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['facturas', pagina],
+    queryFn: () => api.get('/facturacion/facturas/', { params: { page: pagina } }).then(r => r.data),
+    placeholderData: prev => prev,
+  })
+
+  const lista = data?.resultados ?? []
+
+  const METODO_LABEL = {
+    efectivo: 'Efectivo', debito: 'Débito',
+    credito: 'Crédito', transferencia: 'Transferencia', otro: 'Otro',
+  }
+
+  return (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-900">Facturación</h2>
+
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        {isLoading ? (
+          <div className="flex justify-center py-16"><Spinner /></div>
+        ) : lista.length === 0 ? (
+          <EmptyState mensaje="Sin facturas registradas" />
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                {['#','Fecha','Cliente','Barbero','Total','Método'].map(h => (
+                  <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {lista.map(f => (
+                <tr key={f.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 text-gray-400 font-mono text-xs">#{f.id}</td>
+                  <td className="px-4 py-3 text-gray-700">
+                    {format(new Date(f.creado_en), 'dd/MM/yyyy HH:mm')}
+                  </td>
+                  <td className="px-4 py-3 text-gray-700">{f.cliente_nombre}</td>
+                  <td className="px-4 py-3 text-gray-700">{f.barbero_nombre}</td>
+                  <td className="px-4 py-3 font-semibold text-gray-900">
+                    ${Number(f.total).toLocaleString('es-AR')}
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">
+                    {METODO_LABEL[f.metodo_pago] ?? f.metodo_pago}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+        {data && data.paginas > 1 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+            <p className="text-xs text-gray-500">Total: {data.total}</p>
+            <div className="flex gap-2">
+              <button disabled={!data.anterior} onClick={() => setPagina(p => p - 1)}
+                className="px-3 py-1.5 text-xs rounded border border-gray-200 disabled:opacity-40">Anterior</button>
+              <span className="px-3 py-1.5 text-xs">{data.pagina_actual} / {data.paginas}</span>
+              <button disabled={!data.siguiente} onClick={() => setPagina(p => p + 1)}
+                className="px-3 py-1.5 text-xs rounded border border-gray-200 disabled:opacity-40">Siguiente</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
