@@ -12,3 +12,14 @@ except ImportError:
     pass
 
 INTERNAL_IPS = ['127.0.0.1']
+
+# En desarrollo usar caché en memoria si Redis no está disponible
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
+# Celery en modo eager (sin broker) para desarrollo
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True

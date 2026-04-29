@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(c:/proyectos/python/barbeshop/.venv/Scripts/python.exe -m pip list)",
+      "Bash(pg_isready -h localhost -p 5432)",
+      "Bash(.venv/Scripts/python.exe manage.py shell)",
+      "Bash(.venv/Scripts/python.exe manage.py runserver 8000)",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Read(//c/Users/nezarate/AppData/Local/npm-cache/_logs/**)",
+      "Bash(npm run *)"
+    ]
+  }
+}
