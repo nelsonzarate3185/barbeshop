@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from './hooks/useAuth'
+import { PermisosProvider } from './contexts/PermisosContext'
 import AppLayout from './components/layout/AppLayout'
 import Login from './pages/auth/Login'
 import Dashboard from './pages/dashboard/Dashboard'
@@ -11,6 +12,8 @@ import Servicios from './pages/servicios/Servicios'
 import Inventario from './pages/inventario/Inventario'
 import Facturacion from './pages/facturacion/Facturacion'
 import Reportes from './pages/reportes/Reportes'
+import Categorias from './pages/categorias/Categorias'
+import PermisosRoles from './pages/configuracion/PermisosRoles'
 import Spinner from './components/ui/Spinner'
 
 const qc = new QueryClient({
@@ -36,6 +39,8 @@ function AppRoutes() {
         <Route path="inventario" element={<Inventario />} />
         <Route path="facturacion" element={<Facturacion />} />
         <Route path="reportes" element={<Reportes />} />
+        <Route path="categorias" element={<Categorias />} />
+        <Route path="configuracion/permisos" element={<PermisosRoles />} />
       </Route>
     </Routes>
   )
@@ -46,7 +51,9 @@ export default function App() {
     <QueryClientProvider client={qc}>
       <BrowserRouter>
         <AuthProvider>
-          <AppRoutes />
+          <PermisosProvider>
+            <AppRoutes />
+          </PermisosProvider>
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>

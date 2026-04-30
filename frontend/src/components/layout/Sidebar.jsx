@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Calendar, Users, Scissors,
-  Package, FileText, BarChart2, LogOut, Boxes,
+  Package, FileText, BarChart2, LogOut, Boxes, ShieldCheck, Tag,
 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 
@@ -11,6 +11,7 @@ const NAV = [
   { to: '/clientes',    label: 'Clientes',     icon: Users },
   { to: '/barberos',    label: 'Barberos',     icon: Scissors },
   { to: '/servicios',   label: 'Servicios',    icon: Boxes },
+  { to: '/categorias',  label: 'Categorías',   icon: Tag },
   { to: '/inventario',  label: 'Inventario',   icon: Package },
   { to: '/facturacion', label: 'Facturación',  icon: FileText },
   { to: '/reportes',    label: 'Reportes',     icon: BarChart2 },
@@ -18,6 +19,7 @@ const NAV = [
 
 export default function Sidebar() {
   const { usuario, cerrarSesion } = useAuth()
+  const esAdmin = usuario?.rol === 'administrador'
 
   return (
     <aside className="fixed top-0 left-0 h-screen w-60 bg-gray-900 text-white flex flex-col z-30">
@@ -52,6 +54,25 @@ export default function Sidebar() {
           </NavLink>
         ))}
       </nav>
+
+      {/* Configuración (solo admin) */}
+      {esAdmin && (
+        <div className="px-3 pb-2 border-t border-gray-700 pt-3">
+          <NavLink
+            to="/configuracion/permisos"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                isActive
+                  ? 'bg-indigo-600 text-white'
+                  : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+              }`
+            }
+          >
+            <ShieldCheck size={18} />
+            Permisos
+          </NavLink>
+        </div>
+      )}
 
       {/* Logout */}
       <div className="px-3 py-4 border-t border-gray-700">
