@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(node -e \"require\\('xlsx'\\); console.log\\('xlsx ok'\\)\")",
+      "Bash(npx -y --yes -- node -e \"import\\('xlsx'\\).then\\(\\(\\)=>console.log\\('ok'\\)\\)\")"
     ]
   }
 }

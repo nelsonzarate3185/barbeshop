@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from apps.barberos.models import PerfilBarbero
 from apps.clientes.models import Cliente
-from apps.facturacion.models import Comision, Factura
+from apps.facturacion.models import Comision, Factura, ItemFactura
 from apps.inventario.models import MovimientoStock, Producto
 from apps.turnos.models import Turno
 from common.permissions import EsAdministrador, EsBarberoOAdministrador
@@ -428,3 +428,63 @@ class ClientesFrecuentesView(APIView):
             'hasta': hasta,
             'datos': datos,
         })
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Detalle de servicios por barbero y cliente
+# ─────────────────────────────────────────────────────────────────────────────
+
+class DetalleServiciosView(APIView):
+    permission_classes = [IsAuthenticated, EsAdministrador]
+
+    def get(self, request):
+        desde, hasta = rango_fechas(request)
+        barbero_id = request.query_params.get('barbero')
+        cliente_q  = request.query_params.get('cliente_q', '').strip()
+
+        qs = (
+            ItemFactura.objects
+            .select_related(
+                'factura',
+                'factura__barbero__usuario',
+                'factura__cliente',
+                'servicio',
+            )
+            .filter(
+                servicio__isnull=False,
+                factura__creado_en__date__gte=desde,
+                factura__creado_en__date__lte=hasta,
+            )
+        )
+
+        if barbero_id:
+            qs = qs.filter(factura__barbero_id=barbero_id)
+
+        if cliente_q:
+            qs = qs.filter(
+                Q(factura__cliente__nombre__icontains=cliente_q)
+                | Q(factura__cliente__apellido__icontains=cliente_q)
+                | Q(factura__cliente__telefono__icontains=cliente_q)
+            )
+
+        qs = qs.order_by('factura__creado_en')
+
+        datos = []
+        for item in qs:
+            f = item.factura
+            u = f.barbero.usuario
+            c = f.cliente
+            datos.append({
+                'fecha':            f.creado_en.date().isoformat(),
+                'barbero_nombre':   f'{u.first_name} {u.last_name}'.strip(),
+                'cliente_nombre':   f'{c.nombre} {c.apellido}'.strip(),
+                'cliente_telefono': c.telefono or '',
+                'servicio_nombre':  item.servicio.nombre,
+                'cantidad':         str(item.cantidad),
+                'precio_unitario':  str(item.precio_unitario),
+                'subtotal':         str(item.subtotal),
+                'metodo_pago':      f.metodo_pago,
+                'factura_id':       f.id,
+            })
+
+        return Response({'desde': desde, 'hasta': hasta, 'total': len(datos), 'datos': datos})
