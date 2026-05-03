@@ -10,8 +10,13 @@ class Sucursal(models.Model):
     telefono = models.CharField(max_length=20, blank=True)
     zona_horaria = models.CharField(
         max_length=50,
-        default='America/Argentina/Buenos_Aires',
+        default='America/Asuncion',
     )
+    # Datos SET Paraguay
+    ruc = models.CharField(max_length=20, blank=True, help_text='RUC del emisor con DV (ej: 80123456-7)')
+    razon_social = models.CharField(max_length=200, blank=True)
+    punto_expedicion = models.CharField(max_length=3, blank=True, help_text='Código SET de 3 dígitos (ej: 001)')
+    horario_atencion = models.CharField(max_length=100, blank=True, help_text='Ej: Lun-Sáb 08:00-20:00')
     activa = models.BooleanField(default=True)
     creado_en = models.DateTimeField(auto_now_add=True)
 

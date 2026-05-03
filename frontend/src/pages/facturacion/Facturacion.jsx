@@ -55,7 +55,7 @@ export default function Facturacion() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                {['#', 'Fecha', 'Cliente', 'Barbero', 'Total', 'Método'].map((h) => (
+                {['N° Factura', 'Tipo', 'Fecha', 'Cliente', 'RUC/CI', 'Barbero', 'Total', 'Método'].map((h) => (
                   <th
                     key={h}
                     className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
@@ -68,14 +68,20 @@ export default function Facturacion() {
             <tbody className="divide-y divide-gray-50">
               {lista.map((f) => (
                 <tr key={f.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-gray-400 font-mono text-xs">#{f.id}</td>
-                  <td className="px-4 py-3 text-gray-700">
+                  <td className="px-4 py-3 font-mono text-xs text-gray-700">{f.numero_factura || `#${f.id}`}</td>
+                  <td className="px-4 py-3">
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${f.tipo_comprobante === 'electronica' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}`}>
+                      {f.tipo_comprobante === 'electronica' ? 'e-Factura' : 'Manual'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
                     {format(new Date(f.creado_en), 'dd/MM/yyyy HH:mm')}
                   </td>
                   <td className="px-4 py-3 text-gray-700">{f.cliente_nombre}</td>
+                  <td className="px-4 py-3 text-gray-500 font-mono text-xs">{f.cliente_ruc_ci || '—'}</td>
                   <td className="px-4 py-3 text-gray-700">{f.barbero_nombre}</td>
-                  <td className="px-4 py-3 font-semibold text-gray-900">
-                    ${Number(f.total).toLocaleString('es-AR')}
+                  <td className="px-4 py-3 font-semibold text-gray-900 whitespace-nowrap">
+                    Gs. {Math.round(Number(f.total)).toLocaleString('es-PY')}
                   </td>
                   <td className="px-4 py-3 text-gray-600">
                     {METODO_LABEL[f.metodo_pago] ?? f.metodo_pago_display ?? f.metodo_pago}

@@ -93,7 +93,7 @@ export default function Clientes() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                {['Cliente', 'Teléfono', 'Email', 'Frecuente', 'Acciones'].map((h) => (
+                {['Cliente', 'RUC / CI', 'Teléfono', 'Email', 'Frecuente', 'Acciones'].map((h) => (
                   <th
                     key={h}
                     className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
@@ -116,6 +116,7 @@ export default function Clientes() {
                       </p>
                     </div>
                   </td>
+                  <td className="px-4 py-3 text-gray-500 font-mono text-xs">{c.ruc_ci || '—'}</td>
                   <td className="px-4 py-3 text-gray-600">{c.telefono}</td>
                   <td className="px-4 py-3 text-gray-600">{c.email || '—'}</td>
                   <td className="px-4 py-3">

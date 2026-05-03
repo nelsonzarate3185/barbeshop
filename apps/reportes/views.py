@@ -20,7 +20,7 @@ from .utils import limit_param, rango_fechas
 # ─────────────────────────────────────────────────────────────────────────────
 
 class DashboardView(APIView):
-    permission_classes = [IsAuthenticated, EsAdministrador]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         hoy = date.today()

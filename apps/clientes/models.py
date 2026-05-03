@@ -4,6 +4,12 @@ from django.db import models
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
+    ruc_ci = models.CharField(
+        max_length=20,
+        blank=True,
+        default='',
+        help_text='RUC con DV (ej: 80123456-7) o Cédula de Identidad',
+    )
     telefono = models.CharField(max_length=20, unique=True)
     email = models.EmailField(null=True, blank=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)

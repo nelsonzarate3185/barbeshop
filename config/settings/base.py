@@ -38,6 +38,7 @@ LOCAL_APPS = [
     'apps.turnos',
     'apps.facturacion',
     'apps.reportes',
+    'apps.asistencia',
     'apps.bot',
 ]
 

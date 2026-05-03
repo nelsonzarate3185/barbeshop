@@ -20,6 +20,7 @@ export default function ClienteModal({ cliente, onClose }) {
     defaultValues: {
       nombre: '',
       apellido: '',
+      ruc_ci: '',
       telefono: '',
       email: '',
       fecha_nacimiento: '',
@@ -32,6 +33,7 @@ export default function ClienteModal({ cliente, onClose }) {
       reset({
         nombre: cliente.nombre ?? '',
         apellido: cliente.apellido ?? '',
+        ruc_ci: cliente.ruc_ci ?? '',
         telefono: cliente.telefono ?? '',
         email: cliente.email ?? '',
         fecha_nacimiento: cliente.fecha_nacimiento ?? '',
@@ -114,6 +116,20 @@ export default function ClienteModal({ cliente, onClose }) {
                 <p className="text-xs text-red-500 mt-1">{errors.apellido.message}</p>
               )}
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              RUC o Cédula de Identidad <span className="text-red-500">*</span>
+            </label>
+            <input
+              {...register('ruc_ci', { required: 'Requerido' })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+              placeholder="Ej: 80123456-7 (RUC) o 1234567 (CI)"
+            />
+            {errors.ruc_ci && (
+              <p className="text-xs text-red-500 mt-1">{errors.ruc_ci.message}</p>
+            )}
           </div>
 
           <div>

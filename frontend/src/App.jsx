@@ -14,6 +14,7 @@ import Facturacion from './pages/facturacion/Facturacion'
 import Reportes from './pages/reportes/Reportes'
 import Categorias from './pages/categorias/Categorias'
 import PermisosRoles from './pages/configuracion/PermisosRoles'
+import Asistencia from './pages/asistencia/Asistencia'
 import Spinner from './components/ui/Spinner'
 
 const qc = new QueryClient({
@@ -40,6 +41,7 @@ function AppRoutes() {
         <Route path="facturacion" element={<Facturacion />} />
         <Route path="reportes" element={<Reportes />} />
         <Route path="categorias" element={<Categorias />} />
+        <Route path="asistencia" element={<Asistencia />} />
         <Route path="configuracion/permisos" element={<PermisosRoles />} />
       </Route>
     </Routes>

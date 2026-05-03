@@ -14,7 +14,7 @@ const ESTADO_LABEL = {
 }
 
 export default function Dashboard() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['dashboard'],
     queryFn: () => getDashboard().then(r => r.data),
     refetchInterval: 60_000,
@@ -22,6 +22,14 @@ export default function Dashboard() {
 
   if (isLoading) {
     return <div className="flex justify-center py-20"><Spinner /></div>
+  }
+
+  if (isError || !data) {
+    return (
+      <div className="flex justify-center py-20 text-sm text-gray-500">
+        No se pudo cargar el dashboard. Verificá tu conexión o permisos.
+      </div>
+    )
   }
 
   const { turnos_hoy, ingresos_hoy, ingresos_mes, alertas_stock, proximos_turnos, top_barberos_mes } = data
@@ -69,10 +77,16 @@ export default function Dashboard() {
 
       {/* Resumen turnos del día */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        {['pendiente','confirmado','en_curso','completado','cancelado'].map(e => (
-          <div key={e} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center">
-            <p className="text-2xl font-bold text-gray-900">{turnos_hoy[e] ?? 0}</p>
-            <Badge label={ESTADO_LABEL[e]} variant={e} />
+        {[
+          ['pendientes',  'pendiente'],
+          ['confirmados', 'confirmado'],
+          ['en_curso',    'en_curso'],
+          ['completados', 'completado'],
+          ['cancelados',  'cancelado'],
+        ].map(([apiKey, estadoKey]) => (
+          <div key={estadoKey} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center">
+            <p className="text-2xl font-bold text-gray-900">{turnos_hoy[apiKey] ?? 0}</p>
+            <Badge label={ESTADO_LABEL[estadoKey]} variant={estadoKey} />
           </div>
         ))}
       </div>

@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Calendar, Users, Scissors,
-  Package, FileText, BarChart2, LogOut, Boxes, ShieldCheck, Tag,
+  Package, FileText, BarChart2, LogOut, Boxes, ShieldCheck, Tag, ClipboardCheck,
 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 
@@ -13,6 +13,7 @@ const NAV = [
   { to: '/servicios',   label: 'Servicios',    icon: Boxes },
   { to: '/categorias',  label: 'Categorías',   icon: Tag },
   { to: '/inventario',  label: 'Inventario',   icon: Package },
+  { to: '/asistencia',  label: 'Asistencia',   icon: ClipboardCheck },
   { to: '/facturacion', label: 'Facturación',  icon: FileText },
   { to: '/reportes',    label: 'Reportes',     icon: BarChart2 },
 ]

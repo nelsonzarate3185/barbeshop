@@ -16,14 +16,15 @@ class SucursalSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     nombre_completo = serializers.CharField(source='get_full_name', read_only=True)
     sucursal_nombre = serializers.CharField(source='sucursal.nombre', read_only=True)
-    rol_display = serializers.CharField(source='get_rol_display', read_only=True)
+    sucursal_id     = serializers.IntegerField(source='sucursal.id', read_only=True)
+    rol_display     = serializers.CharField(source='get_rol_display', read_only=True)
 
     class Meta:
         model = Usuario
         fields = [
             'id', 'email', 'first_name', 'last_name', 'nombre_completo',
             'rol', 'rol_display', 'telefono', 'avatar',
-            'sucursal', 'sucursal_nombre', 'activo', 'date_joined',
+            'sucursal', 'sucursal_id', 'sucursal_nombre', 'activo', 'date_joined',
         ]
         read_only_fields = ['date_joined']
 

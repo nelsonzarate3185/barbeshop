@@ -1,0 +1,99 @@
+version: '3.9'
+
+# Levanta TODO el proyecto localmente en Docker
+# Uso: docker compose -f docker-compose.local.yml up --build
+#
+# URLs:
+#   Frontend:  http://localhost
+#   API:       http://localhost/api/v1/
+#   Admin:     http://localhost/admin/
+
+services:
+
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: barberia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d barberia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: sh /app/entrypoint.sh
+    env_file:
+      - .env.docker
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.docker
+    volumes:
+      - media_files:/app/media
+      - static_files:/app/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/auth/login/"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: celery -A config worker --loglevel=info --concurrency=2
+    env_file:
+      - .env.docker
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.docker
+    volumes:
+      - media_files:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      web:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:
+  media_files:
+  static_files:

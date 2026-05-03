@@ -12,6 +12,7 @@ api_v1 = [
     path('turnos/', include('apps.turnos.urls')),
     path('facturacion/', include('apps.facturacion.urls')),
     path('reportes/', include('apps.reportes.urls')),
+    path('asistencia/', include('apps.asistencia.urls')),
     path('webhook/', include('apps.bot.urls')),
 ]
 
